@@ -1,51 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Authentication and Chess Game</title>
-  <link rel="stylesheet" href="https://unpkg.com/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-    }
-    .container {
-      max-width: 400px;
-      margin: 0 auto;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    input, button {
-      display: block;
-      width: 100%;
-      margin-bottom: 10px;
-      padding: 10px;
-      box-sizing: border-box;
-    }
-    button {
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    #chessGame {
-      display: none;
-      max-width: 400px;
-      margin: 20px auto;
-    }
-    * {
+<script type="text/javascript">
+  // This is a CodeSandbox injection script that's used to
+  // add navigation and inspector functionality to the preview
+  (function () {
+    var script = document.createElement("script");
+    script.src = "https://codesandbox.io/p/preview-protocol.js";
+    script.defer = true;
+    script.async = true;
+    (document.body || document.documentElement).appendChild(script);
+  })();
+
+  const isIFramePreview = window.top !== window.self;
+
+  // Only run this script in editor context
+  if (isIFramePreview) {
+    // This script is used to enable Chrome DevTools functionality
+    (function () {
+      var script = document.createElement("script");
+      script.src =
+        "https://codesandbox.io/p/chrome-devtool/protocol/index.js";
+
+      script.onload = () => {
+        const devtoolProtocol = window.chobitsu;
+        if (devtoolProtocol) {
+          window.addEventListener("message", (event) => {
+            const { type, data } = event.data;
+
+            if (type === "FROM_DEVTOOL") {
+              devtoolProtocol.sendRawMessage(data);
+            }
+          });
+
+          devtoolProtocol.setOnMessage((data) => {
+            if (data.includes('"id":"tmp')) {
+              return;
+            }
+
+            window.parent.postMessage({ type: "TO_DEVTOOL", data }, "*");
+          });
+
+          devtoolProtocol.sendRawMessage(
+            `{"id":5,"method":"Runtime.enable","params":{}}`
+          );
+        }        
+      }
+
+      (document.head || document.documentElement).prepend(script);
+    })();
+  }
+
+  if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === "undefined") {
+    let nextID = 0;
+    let hook = (__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
+      renderers: new Map(),
+      supportsFiber: true,
+      inject: (renderer) => {
+        const id = nextID++;
+        hook.renderers.set(id, renderer);
+        return id;
+      },
+      onScheduleFiberRoot() {},
+      onCommitFiberRoot() {},
+      onCommitFiberUnmount() {},
+    });
+  }
+
+  document.currentScript.remove();
+</script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jahid Khan">
+    <link rel="icon" type="image/x-icon" href="icone">
+    <style>
+* {
     margin: 0;
     padding: 0;
+}
+
+body {
+    display: grid;
+    place-items: center;
+    overflow-x: hidden;
+}
+
+.border{
+    border: 0.5px solid black;
 }
 
 h1 {
     margin: 10px;
 }
+
 
 ul {
     display: grid;
@@ -97,11 +146,6 @@ li {
 
 @media (max-width:650px){
 
-    #tog {
-        margin-bottom: 70px;
-
-    }
-
     .box {
         width: 11vw;
         height: 11vw;
@@ -111,34 +155,26 @@ li {
         width: 7vw;
     }
 }
-  </style>
+</style>
+    
+    <title>Chess</title>
 </head>
+
+
 <body>
-  <div class="container">
-    <h2>Register</h2>
-    <form id="registerForm">
-      <input type="text" id="username" placeholder="Username" required>
-      <input type="email" id="email" placeholder="Email" required>
-      <input type="password" id="password" placeholder="Password" required>
-      <input type="checkbox" id="showPassword"> Show Password
-      <button type="submit">Register</button>
-    </form>
-    <div id="registerMessage"></div>
-    <h2>Login</h2>
-    <form id="loginForm">
-      <input type="text" id="loginUsername" placeholder="Username" required>
-      <input type="password" id="loginPassword" placeholder="Password" required>
-      <input type="checkbox" id="showLoginPassword"> Show Password
-      <button type="submit">Login</button>
-    </form>
-    <div id="loginMessage"></div>
-  </div>
 
-  <div id="chessGame">
-    <h1>Chess</h1>
-    <h2 id="tog">White's Turn</h2>
+    <h1 class="Chess"><strong><u>Chess</u></strong></h1>
+    
 
-<center>
+
+
+
+    <center>
+        <form action="index.html">
+                <input type="submit" value="regame">
+        </form>
+    </center>
+
     
     <ul>
 
@@ -223,14 +259,15 @@ li {
             <li class="box" id="b107">Wknight</li>
             <li class="box" id="b108">Wrook</li>
         </div>
-<center>
+
     </ul>
-    <center>
-        <form action="Chess.html">
-                <input type="submit" value="regame">
-        </form>
-    </center>
-    <script src="Chess.js"></script>
+    
+
+
+    <div class="border">
+        <h5 id="tog">White's Turn</h5>
+    </div>
+
 </body>
 
 <script>
@@ -798,9 +835,11 @@ document.querySelectorAll('.box').forEach(item => {
                 // console.log(`${toggle}`) 
                 if (tog % 2 == 0) {
                     alert('White Wins !!')
+                    location.reload()
                 }
                 else if (tog % 2 !== 0) {
                     alert('Black Wins !!')
+                    location.reload()
                 }
             }, 100)
         }
@@ -941,12 +980,11 @@ document.querySelectorAll('.box').forEach(ee => {
         }
     })
 })
+function makeAIMove() {
+  const bestMove = minimax(chessBoard, 3, -Infinity, Infinity, true);
+  makeMove(bestMove.row, bestMove.col);
+  currentPlayer = 'white'; // Switch back to player after AI move
+}
 </script>
 
-  </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/1.0.0/chess.min.js"></script>
-  <script src="https://unpkg.com/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
-  <script src="script.js"></script>
-</body>
 </html>
