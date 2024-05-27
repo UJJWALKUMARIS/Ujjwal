@@ -126,13 +126,14 @@ function showChessGame(username) {
     draggable: true,
     position: 'start',
     onDrop: function(source, target) {
+      // See if the move is legal
       var move = game.move({
         from: source,
         to: target,
-        promotion: 'q' // promote to queen for simplicity
+        promotion: 'q' // Automatically promote to a queen for simplicity
       });
 
-      // Illegal move
+      // If the move is illegal, snap back
       if (move === null) return 'snapback';
     },
     onSnapEnd: function() {
