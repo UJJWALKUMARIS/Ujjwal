@@ -37,7 +37,7 @@ document.getElementById('registerForm').addEventListener('submit', function(even
   }
 
   if (!validateEmail(email)) {
-    showMessage('registerMessage', 'Please enter a valid email address.', true);
+    showMessage('registerMessage', 'Please enter a valid Gmail address.', true);
     return;
   }
 
@@ -91,7 +91,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 });
 
 function validateEmail(email) {
-  var re = /\S+@\S+\.\S+/;
+  var re = /^[^\s@]+@gmail\.com$/;
   return re.test(email);
 }
 
